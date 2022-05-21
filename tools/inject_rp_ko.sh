@@ -43,24 +43,24 @@ mkdir -p "$TMP_RDU_DIR"
 echo "Mounting in $TMP_MNT_DIR"
 mount "${LODEV}p1" "$TMP_MNT_DIR"
 
-echo "Unpacking $TMP_MNT_DIR/rd.gz"
+echo "Unpacking $TMP_MNT_DIR/custom.gz"
 cd "$TMP_RDU_DIR"
-if file "$TMP_MNT_DIR/rd.gz" | grep -q 'cpio archive'; then # special case: uncompressed rd
+if file "$TMP_MNT_DIR/custom.gz" | grep -q 'cpio archive'; then # special case: uncompressed rd
   IRP_FLAT_RD=1
-  cat "$TMP_MNT_DIR/rd.gz" | cpio -idmv
+  cat "$TMP_MNT_DIR/custom.gz" | cpio -idmv
 else
   IRP_FLAT_RD=0
-  xz -dc < "$TMP_MNT_DIR/rd.gz" | cpio -idmv
+  xz -dc < "$TMP_MNT_DIR/custom.gz" | cpio -idmv
 fi
 
 echo "Copying $lkm"
 cp "$lkm" "$TMP_RDU_DIR/usr/lib/modules/rp.ko"
 
-echo "Repacking $TMP_MNT_DIR/rd.gz"
+echo "Repacking $TMP_MNT_DIR/custom.gz"
 if [[ IRP_FLAT_RD -eq 1 ]]; then # special case: uncompressed rd
-  find . 2>/dev/null | cpio -o -H newc -R root:root > "$TMP_MNT_DIR/rd.gz"
+  find . 2>/dev/null | cpio -o -H newc -R root:root > "$TMP_MNT_DIR/custom.gz"
 else
-  find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma > "$TMP_MNT_DIR/rd.gz"
+  find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma > "$TMP_MNT_DIR/custom.gz"
 fi
 
 echo "Unmounting & detaching (if requested)"
