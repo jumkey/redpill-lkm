@@ -14,7 +14,6 @@
 #define CMDLINE_CT_VID "vid=" //Boot media Vendor ID override
 #define CMDLINE_CT_PID "pid=" //Boot media Product ID override
 #define CMDLINE_CT_MFG "mfg" //VID & PID override will use force-reinstall VID/PID combo
-#define CMDLINE_CT_MFG "mfg" //VID & PID override will use force-reinstall VID/PID combo
 #define CMDLINE_CT_DOM_SZMAX "dom_szmax=" //Max size of SATA device (MiB) to be considered a DOM (usually you should NOT use this)
 
 //Standard Linux cmdline tokens
