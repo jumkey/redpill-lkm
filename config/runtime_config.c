@@ -116,6 +116,7 @@ static inline bool validate_nets(const unsigned short if_num, mac_address * cons
 {
     size_t mac_len;
     unsigned short macs_num = 0;
+    bool valid = true;
     for (; macs_num < MAX_NET_IFACES; macs_num++) {
         if (!macs[macs_num])
             break; //You cannot have gaps in macs array
@@ -124,10 +125,10 @@ static inline bool validate_nets(const unsigned short if_num, mac_address * cons
         if (mac_len != MAC_ADDR_LEN) {
             pr_loc_err("MAC address \"%s\" is invalid (expected %d characters, found %zu)", *macs[macs_num], MAC_ADDR_LEN,
                        mac_len);
+            valid = false;
         } //else if validate if the MAC is actually semi-valid
     }
 
-    bool valid = true;
     if (if_num == 0) {
         pr_loc_err("Number of defined interfaces (\"%s\") is not specified or empty", CMDLINE_KT_NETIF_NUM);
         valid = false;
@@ -142,6 +143,7 @@ static inline bool validate_nets(const unsigned short if_num, mac_address * cons
     if (if_num != macs_num) {
         pr_loc_err("Number of defined interfaces (\"%s%d\") is not equal to the number of MAC addresses found (%d)",
                    CMDLINE_KT_NETIF_NUM, if_num, macs_num);
+        valid = false;
     }
 
     return valid;
@@ -203,8 +205,8 @@ static bool validate_runtime_config(const struct runtime_config *config)
     valid &= validate_nets(config->netif_num, config->macs);
     valid &= validate_platform_config(config->hw_config);
 
+    pr_loc_dbg("Config validation resulted in %s", valid ? "OK" : "ERR");
     if (valid) {
-        pr_loc_dbg("Config validation resulted in %s", valid ? "OK" : "ERR");
         return 0;
     } else {
         pr_loc_err("Config validation FAILED");

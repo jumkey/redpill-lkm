@@ -168,9 +168,9 @@ static bool extract_dom_max_size(struct boot_media *boot_media, const char *para
 {
     ensure_cmdline_param(CMDLINE_CT_DOM_SZMAX);
 
-    long size_mib = simple_strtol(param_pointer + strlen_static(CMDLINE_KT_NETIF_NUM), NULL, 10);
+    long size_mib = simple_strtol(param_pointer + strlen_static(CMDLINE_CT_DOM_SZMAX), NULL, 10);
     if (size_mib <= 0) {
-        pr_loc_err("Invalid maximum size of SATA DoM (\"%s=%ld\")", CMDLINE_KT_NETIF_NUM, size_mib);
+        pr_loc_err("Invalid maximum size of SATA DoM (\"%s=%ld\")", CMDLINE_CT_DOM_SZMAX, size_mib);
         return true;
     }
 
@@ -288,9 +288,9 @@ static bool extract_netif_macs(mac_address *macs[MAX_NET_IFACES], const char *pa
         goto out_found;
     }
 
-    //mac1=...mac4= are valid options. ASCII for 1 is 49, ASCII for 4 is 52
+    //mac1=...mac8= are valid options. ASCII for 1 is 49, ASCII for MAX_NET_IFACES is (49 + (MAX_NET_IFACES - 1)) # MAX_NET_IFACES must <=9
     if (strncmp(param_pointer, "mac", 3) != 0 || *(param_pointer + 4) != '=' || *(param_pointer + 3) < 49 ||
-        *(param_pointer + 3) > 52)
+        *(param_pointer + 3) > (49 + (MAX_NET_IFACES - 1)))
         return false;
 
     //Find free spot

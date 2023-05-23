@@ -1,5 +1,6 @@
 #include "call_protected.h"
 #include "../common.h"
+#include "helper/symbol_helper.h" //kln()
 #include <linux/errno.h> //common exit codes
 #include <linux/kallsyms.h> //kallsyms_lookup_name()
 #include <linux/module.h> //symbol_get()/put
@@ -19,7 +20,7 @@
   return_type _##org_function_name(call_args)                                                     \
   {                                                                                               \
       if (unlikely(org_function_name##__addr == 0)) {                                             \
-          org_function_name##__addr = kallsyms_lookup_name(#org_function_name);                   \
+          org_function_name##__addr = kln(#org_function_name);                   \
           if (org_function_name##__addr == 0) {                                                   \
               pr_loc_bug("Failed to fetch %s() syscall address", #org_function_name);             \
               return fail_return;                                                                 \
@@ -48,7 +49,7 @@
           return fail_return;                                                                          \
       }                                                                                                \
                                                                                                        \
-      org_function_name##__addr = kallsyms_lookup_name(#org_function_name);                            \
+      org_function_name##__addr = kln(#org_function_name);                            \
       if (org_function_name##__addr == 0) {                                                            \
           pr_loc_bug("Failed to fetch %s() syscall address", #org_function_name);                      \
           return fail_return;                                                                          \

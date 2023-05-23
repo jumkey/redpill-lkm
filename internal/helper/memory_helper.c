@@ -1,5 +1,5 @@
 /**
- * TODO: look into ovrride_symbol to check if there's any docs
+ * TODO: look into override_symbol to check if there's any docs
  */
 #include "memory_helper.h"
 #include "../../common.h"

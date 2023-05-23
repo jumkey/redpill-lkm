@@ -1,6 +1,7 @@
 #include "override_syscall.h"
 #include "../../common.h"
 #include "../helper/memory_helper.h" //set_mem_addr_ro(), set_mem_addr_rw()
+#include "../helper/symbol_helper.h" //kln()
 #include <asm/asm-offsets.h> //__NR_syscall_max & NR_syscalls
 #include <asm/unistd.h> //syscalls numbers (e.g. __NR_read)
 
@@ -25,7 +26,7 @@ static void print_syscall_table(unsigned int from, unsigned to)
 
 static int find_sys_call_table(void)
 {
-    syscall_table_ptr = (unsigned long *)kallsyms_lookup_name("sys_call_table");
+    syscall_table_ptr = (unsigned long *)kln("sys_call_table");
     if (syscall_table_ptr != 0) {
         pr_loc_dbg("Found sys_call_table @ <%p> using kallsyms", syscall_table_ptr);
         return 0;
@@ -43,10 +44,10 @@ static int find_sys_call_table(void)
      a place of sys_call_table by verifying other 2-3 places to make sure other syscalls are where they should be
      The huge downside of this method is it is slow as potentially the amount of memory to search may be large.
     */
-    unsigned long sys_close_ptr = kallsyms_lookup_name("sys_close");
-    unsigned long sys_open_ptr = kallsyms_lookup_name("sys_open");
-    unsigned long sys_read_ptr = kallsyms_lookup_name("sys_read");
-    unsigned long sys_write_ptr = kallsyms_lookup_name("sys_write");
+    unsigned long sys_close_ptr = kln("sys_close");
+    unsigned long sys_open_ptr = kln("sys_open");
+    unsigned long sys_read_ptr = kln("sys_read");
+    unsigned long sys_write_ptr = kln("sys_write");
     if (sys_close_ptr == 0 || sys_open_ptr == 0 || sys_read_ptr == 0 || sys_write_ptr == 0) {
         pr_loc_bug(
                 "One or more syscall handler addresses cannot be located: "

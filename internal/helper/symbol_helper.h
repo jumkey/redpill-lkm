@@ -3,6 +3,8 @@
 
 #include <linux/types.h> //bool
 
+unsigned long kln(const char *name);
+
 /**
  * Check if a given symbol exists
  *

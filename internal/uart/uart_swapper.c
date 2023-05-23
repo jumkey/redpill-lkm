@@ -89,6 +89,7 @@
 #include <linux/list.h> //LIST_POISON1, LIST_POISON2
 #include <linux/timer.h> //timer_pending()
 #include <linux/interrupt.h> //disable_irq()/enable_irq()
+#include <linux/irq.h> //irq_common_data
 #include <linux/irqdesc.h> //irq_has_action
 
 #define pause_irq_save(irq) ({bool __state = irq_has_action(irq); if (__state) { disable_irq(irq); } __state; })
@@ -372,7 +373,11 @@ static inline void restart_port(struct uart_8250_port *up)
     // because we did swap IRQ values. However, we MUST restart such port not to reinit the hardware (which doesn't
     // care) but to fix the interrupt mapping in the kernel!
     //skip extensive tests - it was working before
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,14,0)
+    port->quirks |= UPQ_NO_TXEN_TEST;
+#else
     port->flags |= UPF_NO_TXEN_TEST;
+#endif
     port->flags |= UPF_SKIP_TEST;
     port->ops->startup(port); //this must be called with the lock released or otherwise a deadlock may occur
 

@@ -90,6 +90,7 @@
 #include "override_symbol.h"
 #include "../../common.h"
 #include "../helper/memory_helper.h" //set_mem_addr_ro(), set_mem_addr_rw()
+#include "../helper/symbol_helper.h" //kln()
 #include <linux/kallsyms.h> //kallsyms_lookup_name()
 #include <linux/string.h> //memcpy()
 
@@ -163,7 +164,7 @@ static struct override_symbol_inst* get_ov_symbol_instance(const char *symbol_na
     sym->mem_protected = true;
     strcpy(sym->name, symbol_name);
 
-    sym->org_sym_ptr = (void *)kallsyms_lookup_name(sym->name);
+    sym->org_sym_ptr = (void *)kln(sym->name);
     if (unlikely(sym->org_sym_ptr == 0)) { //header file: "Lookup the address for a symbol. Returns 0 if not found."
         pr_loc_err("Failed to locate vaddr for %s()", sym->name);
         put_overridden_symbol(sym);
