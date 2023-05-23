@@ -538,6 +538,7 @@ static int populate_win_smart_log(const u8 *req_header, void __user *buff_ptr)
             smart_log[0] = WIN_SMART_DIG_LOG_VERSION;
             //if every other byte is zero we can ignore the rest of the fields according to Table 63. We also SHOULD NOT
             // generate a checksum for log directory (despite all others using checksums...)
+            break;// TODO check
 
         case 0x01: //summary SMART error log (see sect. 8.55.6.8.2 Summary error log sector)
             smart_log[0] = WIN_SMART_SUM_LOG_VERSION;

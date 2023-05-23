@@ -91,6 +91,7 @@ int unregister_boot_shim(void)
             break;
         case BOOT_MEDIA_SATA_DISK:
             out = unregister_fake_sata_boot_shim();
+            break;
         case BOOT_MEDIA_SHIM_NULL:
             pr_loc_bug("Boot shim is no registered");
             return -ENOENT;
