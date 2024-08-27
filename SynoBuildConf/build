@@ -1,0 +1,17 @@
+#!/bin/bash
+# Copyright (C) 2000-2017 Synology Inc. All rights reserved.
+
+case ${MakeClean} in
+	[Yy][Ee][Ss])
+		make clean
+		;;
+esac
+
+make ${MAKE_FLAGS} LINUX_SRC=$KSRC CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH  -j dev-v7
+
+MODULES_DIR="${ImageDir}/modules"
+
+[ -d "${MODULES_DIR}" ] || mkdir -p ${MODULES_DIR}
+rm -f ${MODULES_DIR}/*
+
+make install STRIP="${CROSS_COMPILE}strip" DESTDIR="$MODULES_DIR"
