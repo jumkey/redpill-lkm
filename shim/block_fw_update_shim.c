@@ -30,6 +30,7 @@
 #define DMI_MAX_LEN 512
 #define FW_BOARD_NAME "\x53\x79\x6e\x6f\x64\x65\x6e"
 #define FW_UPDATE_PATH "./H2OFFT-Lx64"
+#define FW_UPDATE_PATH_NEW "./H2OFFT-Lx64-0815"
 
 static char dmi_product_name_backup[DMI_MAX_LEN] = { '\0' };
 static void patch_dmi(void)
@@ -66,8 +67,11 @@ int register_fw_update_shim(void)
 {
     shim_reg_in();
 
-    int out = add_blocked_execve_filename(FW_UPDATE_PATH);
-    if (out != 0)
+    int out;
+    if (
+            (out = add_blocked_execve_filename(FW_UPDATE_PATH)) != 0
+         || (out = add_blocked_execve_filename(FW_UPDATE_PATH_NEW)) != 0
+       )
         return out;
 
     patch_dmi();
